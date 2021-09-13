@@ -13,21 +13,14 @@ package level2.bracketChange;
 public class Solution {
 
     public String solution(String p) {
-        if (p == null || "".equals(p))
-            return "";
-        String u = devideBalancedBraket("", p);
-
-        String v = p.substring(u.length(), p.length());
-
-        v = devideBalancedBraket("", "(" + v);
-
-        return u;
+        return devideBalancedBraket("", p);
     }
 
     private String devideBalancedBraket(String u, String v) {
         if (v == null || "".equals(v)) {
             return "";
         }
+        boolean right = true;
         int openBracketCount = 0;
         int closeBracketCount = 0;
         int i = 0;
@@ -37,14 +30,27 @@ public class Solution {
             } else {
                 closeBracketCount++;
             }
+            if(closeBracketCount > openBracketCount) {
+                right = false;
+            }
             if (openBracketCount == closeBracketCount) {
-                return v.substring(0, i + 1)
-                        + devideBalancedBraket(u + v.substring(0, i + 1), v.substring(i + 1, v.length()));
-            } else if (closeBracketCount > openBracketCount) {
-                return "";
+                break;
             }
         }
-        return "";
+        if(right) {
+            return v.substring(0, i + 1)
+                    + devideBalancedBraket(u + v.substring(0, i + 1), v.substring(i + 1, v.length()));
+        }
+        else {
+            return "(" + devideBalancedBraket(u + v.substring(0, i + 1), v.substring(i + 1, v.length()))
+                     + ")" + changeBracket(v.substring(0, i + 1));
+        }
+    }
+
+    private String changeBracket(String bracket) {
+        String changedBracket = bracket;
+        changedBracket = reverseBracket(changedBracket.substring(1, changedBracket.length() - 1));
+        return changedBracket;
     }
 
     private String reverseBracket(String str) {
