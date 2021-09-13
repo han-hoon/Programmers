@@ -13,57 +13,59 @@ package level2.bracketChange;
 public class Solution {
 
     public String solution(String p) {
-
-        if(p == null || "".equals(p))
+        if (p == null || "".equals(p))
             return "";
+        String u = devideBalancedBraket("", p);
 
-        return getDividedBracket(p);
+        String v = p.substring(u.length(), p.length());
+
+        v = devideBalancedBraket("", "(" + v);
+
+        return u;
     }
 
-    public String getDividedBracket(String p) {
-        String bracket = "";
-        String otherBracket = "";
-
-        return divideBracket("", p);
-    }
-
-    public String divideBracket(String u, String v) {
-        if(v == null || v.length() == 0)
+    private String devideBalancedBraket(String u, String v) {
+        if (v == null || "".equals(v)) {
             return "";
+        }
         int openBracketCount = 0;
         int closeBracketCount = 0;
         int i = 0;
-
-        for(i = 0; i < v.length(); i++) {
-            if(u.charAt(i) == ')') {
+        for (i = 0; i < v.length(); i++) {
+            if (v.charAt(i) == '(') {
                 openBracketCount++;
-            } else {        // CLOSE_BRACKET
+            } else {
                 closeBracketCount++;
-                if(openBracketCount == closeBracketCount) {
-                    break;
-                }  else if(openBracketCount < closeBracketCount) {
-                    i = -1;
-                    break;
-                }
+            }
+            if (openBracketCount == closeBracketCount) {
+                return v.substring(0, i + 1)
+                        + devideBalancedBraket(u + v.substring(0, i + 1), v.substring(i + 1, v.length()));
+            } else if (closeBracketCount > openBracketCount) {
+                return "";
             }
         }
-        if(i > 0) {
-            return v.substring(0, i + 1) + divideBracket(v.substring(0, v.length()), v.substring(i, v.length()));
-        } else {        // -1
-            v = "(" + v;
-            String p2 = v + u;
+        return "";
+    }
 
-            return divideBracket(p);
+    private String reverseBracket(String str) {
+        String reversedStr = "";
+        for(char c : str.toCharArray()) {
+            if(c == '(')
+                reversedStr += ")";
+            else
+                reversedStr += "(";
         }
+        return reversedStr;
     }
 }
+
 
 class SolutionRunner {
     public static void main(String[] args) {
         String p1 = "(()())()";
         String p2 = ")(";
         String p3 = "()))((()";
-        System.out.println(new Solution().solution(p1));
+//        System.out.println(new Solution().solution(p1));
         System.out.println(new Solution().solution(p2));
         System.out.println(new Solution().solution(p3));
     }
