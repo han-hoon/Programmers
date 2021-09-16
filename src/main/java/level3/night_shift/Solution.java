@@ -1,6 +1,7 @@
 package level3.night_shift;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @package : level3.night_shift
@@ -15,20 +16,20 @@ import java.util.Arrays;
 public class Solution {
 
     public long solution(int n, int[] works) {
-        long answer = 0;
-        Arrays.sort(works);
-        int val = works[works.length / 2];
+        Integer[] worksWrapped = Arrays.stream(works).boxed().toArray(Integer[]::new);
+        Arrays.sort(worksWrapped
+                , Collections.reverseOrder());
+        int val = worksWrapped[0];
         int count = 0;
         int index = 0;
         while(count < n) {
-            if(works[index] > val) {
-                works[index]--;
+            if(worksWrapped[index] > val) {
+                worksWrapped[index]--;
                 count++;
             } else {
                 index++;
             }
-
-            if(index == works.length && count != n) {
+            if(index == worksWrapped.length && count != n) {
                 index = 0;
                 val--;
             }
@@ -36,11 +37,11 @@ public class Solution {
                 return 0;
             }
         }
-
-        return getNightShiftDegree(works);
+        Arrays.stream(worksWrapped).forEach(i -> System.out.print(i + "\t"));
+        return getNightShiftDegree(worksWrapped);
     }
 
-    private long getNightShiftDegree(int[] works) {
+    private long getNightShiftDegree(Integer[] works) {
         long sum = 0;
         for(int work : works) {
             sum += Math.pow(work, 2);
@@ -58,11 +59,14 @@ class SolutionRunner {
         int n1 = 4;
         int n2 = 1;
         int n3 = 3;
+        int n4 = 99;
         int[] works1 = {4, 3, 3};
         int[] works2 = {2, 1, 2};
         int[] works3 = {1, 1};
+        int[] works4 = {2, 15, 22, 55, 55};
         System.out.println("sol1 : " + solution.solution(n1, works1));
         System.out.println("sol2 : " + solution.solution(n2, works2));
         System.out.println("sol3 : " + solution.solution(n3, works3));
+        System.out.println("sol4 : " + solution.solution(n4, works4));
     }
 }
