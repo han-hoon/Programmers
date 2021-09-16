@@ -15,14 +15,28 @@ public class Solution {
     public String solution(String p) {
         if (p == null || "".equals(p))
             return "";
-        String u = devideBalancedBraket("", p);
+        String balancedBracket = "";
+        String u = "";
+        String v = p;
+        do {
+            u = devideBalancedBraket(balancedBracket, v);
+            if("".equals(u)) {
+                u = devideBalancedBraket(balancedBracket, "(" + v);
+                if(u.length() != 0) {
+                    u += ")";
+                    u = reverseBracket(u.substring(1, u.length() - 1));
+                    balancedBracket += u;
+                    v = p.substring(balancedBracket.length(), p.length());
+                }
+            } else {
+                balancedBracket += u;
+                v = p.substring(balancedBracket.length(), p.length());
+            }
 
-        String v = p.substring(u.length(), p.length());
-
-        v = devideBalancedBraket("", "(" + v);
-
+        } while (balancedBracket.length() != p.length());
         return u;
     }
+
 
     private String devideBalancedBraket(String u, String v) {
         if (v == null || "".equals(v)) {
@@ -31,7 +45,7 @@ public class Solution {
         int openBracketCount = 0;
         int closeBracketCount = 0;
         int i = 0;
-        for (i = 0; i < v.length(); i++) {
+        for (i = 0; i < v.length() - 1; i++) {
             if (v.charAt(i) == '(') {
                 openBracketCount++;
             } else {
@@ -66,7 +80,7 @@ class SolutionRunner {
         String p2 = ")(";
         String p3 = "()))((()";
 //        System.out.println(new Solution().solution(p1));
-        System.out.println(new Solution().solution(p2));
+//        System.out.println(new Solution().solution(p2));
         System.out.println(new Solution().solution(p3));
     }
 }
