@@ -1,5 +1,6 @@
 package level3.jewelry_shopping;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,24 +17,35 @@ import java.util.Set;
 public class JewelryShopping {
 
     public int[] solution(String[] gems) {
-        Set<String> checkedJewelrySet = new HashSet<>();
-        int start = 0, end = 0;
+        int[] answer = new int[2];
+        Set<String> jewelrySet = new HashSet<>();
+        int minRange = 1000000;
 
         for(int i = 0; i < gems.length; i++) {
-            if(!checkedJewelrySet.contains(gems[i])) {
-                checkedJewelrySet.add(gems[i]);
-                end = i;
+            if(!jewelrySet.contains(gems[i])) {
+                jewelrySet.add(gems[i]);
             }
         }
 
-        for(int i = end; i >= 0; i--) {
-            checkedJewelrySet.remove(gems[i]);
-            if(checkedJewelrySet.isEmpty()) {
-                start = i;
-                break;
+        for(int i = 0; i <= gems.length - jewelrySet.size(); i++) {
+            int range = getJewelryRange(gems, new HashSet<>(jewelrySet), i);
+            if(range != -1 && range < minRange) {
+                minRange = range;
+                answer[0] = i + 1;
+                answer[1] = answer[0] + range;
             }
         }
-        return new int[] {start + 1, end + 1};
+        return answer;
+    }
+
+    private int getJewelryRange(String[] gems,Set<String> jewelrySet, int start) {
+        for(int i = start; i < gems.length; i++) {
+            jewelrySet.remove(gems[i]);
+            if(jewelrySet.isEmpty()) {
+                return i - start;
+            }
+        }
+        return -1;
     }
 }
 
@@ -45,11 +57,17 @@ class Runner {
         String[] gems2 = {"AA", "AB", "AC", "AA", "AC"};
         String[] gems3 = {"XYZ", "XYZ", "XYZ"};
         String[] gems4 = {"ZZZ", "YYY", "NNNN", "YYY", "BBB"};
+        String[] gems5 = {"A","A","A","B","B"};
+        String[] gems6 = {"A"};
+        String[] gems7 = {"A","B","B","B","B","B","B","C","B","A"};
 
         int[] result1 = jewelryShopping.solution(gems1);
         int[] result2 = jewelryShopping.solution(gems2);
         int[] result3 = jewelryShopping.solution(gems3);
         int[] result4 = jewelryShopping.solution(gems4);
+        int[] result5 = jewelryShopping.solution(gems5);
+        int[] result6 = jewelryShopping.solution(gems6);
+        int[] result7 = jewelryShopping.solution(gems7);
 
         Arrays.stream(result1).forEach(i -> System.out.print(i + "\t"));
         System.out.println();
@@ -58,6 +76,12 @@ class Runner {
         Arrays.stream(result3).forEach(i -> System.out.print(i + "\t"));
         System.out.println();
         Arrays.stream(result4).forEach(i -> System.out.print(i + "\t"));
+        System.out.println();
+        Arrays.stream(result5).forEach(i -> System.out.print(i + "\t"));
+        System.out.println();
+        Arrays.stream(result6).forEach(i -> System.out.print(i + "\t"));
+        System.out.println();
+        Arrays.stream(result7).forEach(i -> System.out.print(i + "\t"));
     }
 
 }
