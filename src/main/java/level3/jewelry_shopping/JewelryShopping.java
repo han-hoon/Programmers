@@ -1,8 +1,7 @@
 package level3.jewelry_shopping;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * @package : level3.jewelry_shopping
@@ -17,71 +16,87 @@ import java.util.Set;
 public class JewelryShopping {
 
     public int[] solution(String[] gems) {
-        int[] answer = new int[2];
-        Set<String> jewelrySet = new HashSet<>();
-        int minRange = 1000000;
+        int[] answer = new int[]{0, 100000};
+        boolean scanEnd = false;
+        Set<String> gemsSet = new HashSet<>();
+        List<String> subGemList = new LinkedList<>();
+        int start = 0, end = -1;
 
-        for(int i = 0; i < gems.length; i++) {
-            if(!jewelrySet.contains(gems[i])) {
-                jewelrySet.add(gems[i]);
+        gemsSet.addAll(Arrays.asList(gems));
+
+        while(!scanEnd) {
+            while(end < gems.length && !scanEnd) {
+                end++;
+                subGemList.add(gems[end]);
+                if(end == gems.length - 1)
+                    scanEnd = true;
+                if(subGemList.containsAll(gemsSet)) {
+                    if(end - start < answer[1] - answer[0]) {
+                        answer[0] = start + 1;
+                        answer[1] = end + 1;
+                    }
+                    break;
+                }
             }
-        }
-
-        for(int i = 0; i <= gems.length - jewelrySet.size(); i++) {
-            int range = getJewelryRange(gems, new HashSet<>(jewelrySet), i);
-            if(range != -1 && range < minRange) {
-                minRange = range;
-                answer[0] = i + 1;
-                answer[1] = answer[0] + range;
+            while(start < end) {
+                if(subGemList.containsAll(gemsSet)) {
+                    start++;
+                    subGemList.remove(0);
+                    if(subGemList.containsAll(gemsSet)
+                            && end - start < answer[1] - answer[0]) {
+                        answer[0] = start + 1;
+                        answer[1] = end + 1;
+                    }
+                } else {
+                    break;
+                }
             }
         }
         return answer;
     }
 
-    private int getJewelryRange(String[] gems,Set<String> jewelrySet, int start) {
-        for(int i = start; i < gems.length; i++) {
-            jewelrySet.remove(gems[i]);
-            if(jewelrySet.isEmpty()) {
-                return i - start;
-            }
-        }
-        return -1;
-    }
 }
 
 class Runner {
 
     public static void main(String[] args) {
         JewelryShopping jewelryShopping = new JewelryShopping();
+
+
         String[] gems1 = {"DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA"};
-        String[] gems2 = {"AA", "AB", "AC", "AA", "AC"};
-        String[] gems3 = {"XYZ", "XYZ", "XYZ"};
-        String[] gems4 = {"ZZZ", "YYY", "NNNN", "YYY", "BBB"};
-        String[] gems5 = {"A","A","A","B","B"};
-        String[] gems6 = {"A"};
-        String[] gems7 = {"A","B","B","B","B","B","B","C","B","A"};
-
         int[] result1 = jewelryShopping.solution(gems1);
-        int[] result2 = jewelryShopping.solution(gems2);
-        int[] result3 = jewelryShopping.solution(gems3);
-        int[] result4 = jewelryShopping.solution(gems4);
-        int[] result5 = jewelryShopping.solution(gems5);
-        int[] result6 = jewelryShopping.solution(gems6);
-        int[] result7 = jewelryShopping.solution(gems7);
-
         Arrays.stream(result1).forEach(i -> System.out.print(i + "\t"));
         System.out.println();
+
+        String[] gems2 = {"AA", "AB", "AC", "AA", "AC"};
+        int[] result2 = jewelryShopping.solution(gems2);
         Arrays.stream(result2).forEach(i -> System.out.print(i + "\t"));
         System.out.println();
+
+        String[] gems3 = {"XYZ", "XYZ", "XYZ"};
+        int[] result3 = jewelryShopping.solution(gems3);
         Arrays.stream(result3).forEach(i -> System.out.print(i + "\t"));
         System.out.println();
+
+        String[] gems4 = {"ZZZ", "YYY", "NNNN", "YYY", "BBB"};
+        int[] result4 = jewelryShopping.solution(gems4);
         Arrays.stream(result4).forEach(i -> System.out.print(i + "\t"));
         System.out.println();
+
+        String[] gems5 = {"DIA", "EM", "EM", "RUB", "DIA"};
+        int[] result5 = jewelryShopping.solution(gems5);
         Arrays.stream(result5).forEach(i -> System.out.print(i + "\t"));
         System.out.println();
+
+        String[] gems6 = {"A", "B", "C", "B", "F", "D", "A", "F", "B", "D", "B"};
+        int[] result6 = jewelryShopping.solution(gems6);
         Arrays.stream(result6).forEach(i -> System.out.print(i + "\t"));
         System.out.println();
+
+        String[] gems7 = {"A","B","B","B","B","B","B","C","B","A"};
+        int[] result7 = jewelryShopping.solution(gems7);
         Arrays.stream(result7).forEach(i -> System.out.print(i + "\t"));
+        System.out.println();
     }
 
 }
