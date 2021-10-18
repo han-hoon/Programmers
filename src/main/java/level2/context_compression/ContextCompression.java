@@ -22,17 +22,19 @@ public class ContextCompression {
     }
 
     public int solution(String s) {
-        int answer = 100000;
-        String answerStr = "";
-        String checkStr = "";
+        String answer = "";
         int checkStrLen = 1;
         do {
+            String checkStr = "";
             String newStr = "";
-            int count = 0;
             int i = 0;
-            while(i + checkStrLen < s.length()) {
-                checkStr = s.substring(i, i + checkStrLen);
-                checkStrLen = checkStr.length();
+            while(i + checkStrLen < s.length() - 1) {
+                int count = 0;
+                if("".equals(checkStr)) {
+                    checkStr = s.substring(0, checkStrLen);
+                } else {
+                    checkStr = s.substring(i, i + checkStrLen);
+                }
                 while(i + checkStrLen <= s.length()
                         && checkStr.equals(s.substring(i, i + checkStrLen))) {
                     i += checkStrLen;
@@ -40,18 +42,13 @@ public class ContextCompression {
                 }
                 if(count > 1) {
                     newStr += count + checkStr;
-                    count = 0;
                 } else {
                     newStr += checkStr;
-                    count = 1;
-                    i += checkStrLen;
                 }
             }
-            answer = newStr.length() < answer ? newStr.length() : answer;
-            answerStr = newStr;
-        } while(checkStrLen++ < s.length() / 2);
-        System.out.println(answerStr);
-        return answer;
+            newStr += s.substring(i);
+            answer = ("".equals(answer) || newStr.length() < answer.length()) ? newStr : answer;
+        } while(checkStrLen++ < s.length());
+        return answer.length();
     }
-
 }
